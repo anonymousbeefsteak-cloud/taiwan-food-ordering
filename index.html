@@ -51,11 +51,18 @@
     <script type="text/babel">
         const { useState, useCallback, useEffect, useMemo } = React;
 
-        // 配置
-       const LIFF_ID = process.env.NEXT_PUBLIC_LIFF_ID;
-const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
-
+        // 配置 - 從環境變數讀取，如果沒有則使用預設值
+        const LIFF_ID = process.env.NEXT_PUBLIC_LIFF_ID || '2008316489-6nMjb0KX';
+        const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT || 'https://script.google.com/macros/s/AKfycbxR1gzQgV1jq8DUhYX8EY0EmA6i2PBnjo_IZJUuwRgj7Ggjgro8Mdbnic7ZdhIIc2B1/exec';
         const DELIVERY_FEE = 30;
+
+        // 檢查環境變數是否載入
+        console.log('LIFF_ID:', LIFF_ID);
+        console.log('API_ENDPOINT:', API_ENDPOINT);
+        console.log('環境變數載入狀態:', {
+            hasLiffId: !!LIFF_ID,
+            hasApiEndpoint: !!API_ENDPOINT
+        });
 
         // 默認菜單
         const DEFAULT_MENU = [
@@ -66,7 +73,7 @@ const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
             { name: '珍珠奶茶', price: 45, icon: '🥤', status: '供應中' }
         ];
 
-        // API 服務 - 修復版本
+        // API 服務
         const apiService = {
             async request(payload) {
                 try {
@@ -182,7 +189,9 @@ const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
             useEffect(() => {
                 const initializeLiff = async () => {
                     try {
+                        console.log('正在初始化 LINE LIFF...');
                         await liff.init({ liffId: LIFF_ID });
+                        
                         if (liff.isLoggedIn()) {
                             setIsLoggedIn(true);
                             const [userProfile, token] = await Promise.all([
@@ -865,4 +874,3 @@ const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
     </script>
 </body>
 </html>
-
